@@ -8,6 +8,27 @@ from db.seeds import (
 from db.util import db_connection
 
 
+def is_db_initialized():
+    """Checks that tables exist and contain data."""
+
+    conn = db_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT EXISTS(SELECT 1 FROM pg_class WHERE relname = %s)", ("Users",)
+    )
+    relation_exists = cur.fetchone()[0]
+    if relation_exists:
+        cur.execute("SELECT EXISTS(SELECT * FROM Users)")
+        data_exists = cur.fetchone()[0]
+        return data_exists
+
+    cur.close()
+    conn.close()
+
+    return False
+
+
 def init_schema():
     print("Initializing database schema...")
 
@@ -95,3 +116,10 @@ def seed_db():
     seed_compound_table(connection)
     seed_experiment_compound_table(connection)
     connection.close()
+
+
+def load_csv_data_into_db():
+    db_initialized = is_db_initialized()
+    if not db_initialized:
+        init_schema()
+        seed_db()

@@ -13,6 +13,11 @@ view-db-records:
 		docker exec -it sal_backend-db-1 psql -U postgres -d science -c "SELECT * FROM $$table;"; \
 	done
 
+drop-db-tables:
+	@for table in $(TABLES); do \
+        docker exec -it sal_backend-db-1 psql -U postgres -d science -c "DROP TABLE IF EXISTS $$table CASCADE;"; \
+    done
+
 view-db-schema:
 	@docker exec -it sal_backend-db-1 psql -U postgres -d science -c "\dt"
 

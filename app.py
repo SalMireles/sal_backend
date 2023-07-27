@@ -3,10 +3,6 @@ from db import init_db, metric_queries, metric_inserts
 
 app = Flask(__name__)
 
-init_db.init_schema()
-# Load CSV files into the database
-init_db.seed_db()
-
 
 @app.teardown_appcontext
 def close_db(error):
@@ -32,6 +28,8 @@ def index():
 
 
 def etl():
+    # Load CSV files - into postgres database
+    init_db.load_csv_data_into_db()
     # Process files to derive features - make sql queries to get the data we want
     total_experiments_ran_response = (
         metric_queries.query_metrics_total_user_experiments(user_id=1)
@@ -75,5 +73,4 @@ def trigger_etl():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='127.0.0.1', port=5000)
-
+    app.run(debug=True, host="127.0.0.1", port=5000)
