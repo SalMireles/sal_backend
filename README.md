@@ -3,6 +3,10 @@
 ### Introduction
 In this challenge, you will be tasked with creating a simple ETL pipeline that can be triggered via an API call. You will be provided with a set of CSV files that you will need to process, derive some features from, and then upload into a database table.
 
+### Challenge Information
+<details>
+  <summary>Click to expand</summary>
+
 ### Requirements
 - Python 3.7+
 - Docker
@@ -59,3 +63,49 @@ Code quality and organization.
 Proper use of Python and Docker.
 Successful execution of the ETL process.
 Accuracy of the derived features.
+</details>
+
+### Organization
+
+- `makefile`: Contains all the commands to boot and interact with the containers
+- `data/data_loader.py`: Imports the data and preps it for ingestion
+- `sql/init.sql`: Used by the postgress container to initializes a db called `science`
+- `db/`: Handles writing and reading transactions to the database. I used raw SQL to showcase my skills, but would use an ORM for a real application
+- `templates/`: Simple landing page using html
+
+- Quick ERD Mockup
+![ERD](images/erd.png)
+
+
+### How to build and run the application
+<details>
+  <summary>Click to expand</summary>
+
+  #### Requirements
+  - Docker
+
+  #### Running the App
+  - run  `make docker-run`
+
+  * This will build and run the application with all the required services
+</details>
+
+### How to trigger the ETL process
+<details>
+  <summary>Click to expand</summary>
+
+- run `make trigger-etl`
+* The ETL pipeline uses user_id 1 as an example to calculate metrics
+</details>
+
+### How to view your database data
+<details>
+  <summary>Click to expand</summary>
+
+- run `make view-db-records`
+- Alternatively, in a db viewer using port 5433 you can view the following:
+
+![USER](images/user_metric.jpg)
+![GLOBAL](images/global_metric.jpg)
+
+</details>
