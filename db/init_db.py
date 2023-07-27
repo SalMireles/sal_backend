@@ -6,27 +6,22 @@ from db.seeds import (
 )
 
 from db.util import db_connection
+import psycopg2
 
 
 def is_db_initialized():
     """Checks that tables exist and contain data."""
-
     conn = db_connection()
     cur = conn.cursor()
-
-    cur.execute(
-        "SELECT EXISTS(SELECT 1 FROM pg_class WHERE relname = %s)", ("Users",)
-    )
-    relation_exists = cur.fetchone()[0]
-    if relation_exists:
+    try:
         cur.execute("SELECT EXISTS(SELECT 1 FROM Users)")
         data_exists = cur.fetchone()[0]
-        return True if data_exists else False
-
+    except psycopg2.Error as error:
+        return False
     cur.close()
     conn.close()
 
-    return False
+    return True
 
 
 def init_schema():
@@ -118,8 +113,6 @@ def seed_db():
 
 
 def load_csv_data_into_db():
-    db_initialized = is_db_initialized()
-    print(f"Database initialized: {db_initialized}")
-    if not db_initialized:
+    if not is_db_initialized():
         init_schema()
         seed_db()

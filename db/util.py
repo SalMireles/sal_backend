@@ -9,7 +9,6 @@ def db_connection():
         password="postgres",
         port="5432",
     )
-
     return connection
 
 
