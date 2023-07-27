@@ -14,7 +14,7 @@ def close_db(error):
 
 def build_responses(query_results):
     for query_result in query_results:
-        if query_result["status"] != "success":
+        if not query_result["status"] != "success":
             return jsonify({"status": 400, "data": query_result})
     return jsonify({"status": 200, "data": [q for q in query_results]})
 
@@ -48,15 +48,18 @@ def etl():
     most_commonly_used_compound = most_commonly_used_compound_response.get(
         "data"
     )
+
     response_1 = metric_inserts.insert_metrics_total_user_experiments(
         user_id=1,
         metric_name="total_experiments_ran",
         metric_result=int(total_experiments_ran),
     )
+
     response_2 = metric_inserts.insert_metrics_average_experiments_per_user(
         metric_name="average_experiments_per_user",
         metric_result=float(average_experiments_per_user),
     )
+
     response_3 = metric_inserts.insert_metrics_most_commonly_used_compound(
         metric_name="most_commonly_used_compound_id",
         metric_result=int(most_commonly_used_compound),

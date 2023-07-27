@@ -19,9 +19,9 @@ def is_db_initialized():
     )
     relation_exists = cur.fetchone()[0]
     if relation_exists:
-        cur.execute("SELECT EXISTS(SELECT * FROM Users)")
+        cur.execute("SELECT EXISTS(SELECT 1 FROM Users)")
         data_exists = cur.fetchone()[0]
-        return data_exists
+        return True if data_exists else False
 
     cur.close()
     conn.close()
@@ -33,7 +33,6 @@ def init_schema():
     print("Initializing database schema...")
 
     conn = db_connection()
-    conn.autocommit = True
     cur = conn.cursor()
 
     # Experiment DATA
@@ -102,7 +101,7 @@ def init_schema():
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );"""
     )
-
+    conn.commit()
     cur.close()
     conn.close()
 
@@ -120,6 +119,7 @@ def seed_db():
 
 def load_csv_data_into_db():
     db_initialized = is_db_initialized()
+    print(f"Database initialized: {db_initialized}")
     if not db_initialized:
         init_schema()
         seed_db()

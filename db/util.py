@@ -22,7 +22,10 @@ def db_transaction(func):
             func(cur, *args, **kwargs)
             if func.__name__.startswith("insert"):
                 conn.commit()
-                return {"status": "success"}
+                return {
+                    "status": "sucess",
+                    "executed": f"{func.__name__}, kwargs: {kwargs}",
+                }
             else:
                 all_data = [[str(x) for x in i] for i in cur.fetchall()]
                 return {
@@ -36,8 +39,5 @@ def db_transaction(func):
                 "status": "err",
                 "err": "There was a problem processing your request.",
             }
-        finally:
-            cur.close()
-            conn.close()
 
     return wrapper
